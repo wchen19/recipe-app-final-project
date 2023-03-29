@@ -11,7 +11,7 @@ const api = {
     axios.get(`${API_BASE_URL}/sorted-by-name-asc/recipe`),
   getRecipesSortedByNameDesc: () =>
     axios.get(`${API_BASE_URL}/sorted-by-name-desc/recipe`),
-  getRecipesByIds: () => axios.get(`${API_BASE_URL}/recipes`),
+  getRecipesByIds: ids => axios.get(`${API_BASE_URL}/recipes?ids=${ids}`),
   getRecipeById: id => axios.get(`${API_BASE_URL}/recipe/${id}`),
   addRecipe: recipe => axios.post(`${API_BASE_URL}/recipe`, recipe),
   editRecipe: (id, recipe) => axios.put(`${API_BASE_URL}/recipe/${id}`, recipe),

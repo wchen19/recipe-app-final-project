@@ -186,7 +186,7 @@ const Home = ({navigation}) => {
           return (
             <RecipeCard
               containerStyle={{marginHorizontal: SIZES.padding}}
-              categoryItem={item}
+              item={item}
               onPress={() => navigation.navigate('Recipe', {recipe: item})}
             />
           );

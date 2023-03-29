@@ -9,33 +9,48 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import {CategoryCard} from '../components';
-import {COLORS, SIZES, FONTS, recipes} from '../constants';
+import {RecipeCard} from '../components';
+import {COLORS, SIZES, FONTS, getRecom, api} from '../constants';
 
 const Search = ({navigation}) => {
+  const [recipes, setRecipes] = useState({});
   const [searchValue, setSearchValue] = useState('');
   const [showRecipes, setShowRecipes] = useState(false);
   const [loading, setLoading] = useState(false);
   const inputRef = useRef(null);
 
-  const fetchRecipes = () => {
+  const fetchData = async ids => {
+    await api
+      .getRecipesByIds(ids)
+      .then(response => {
+        setRecipes(response.data);
+        setShowRecipes(true);
+      })
+      .catch(error => console.log(error));
+  };
+
+  const fetchRecipes = async ingredients => {
     setLoading(true);
-    // simulate delay for demonstration purposes
-    setTimeout(() => {
-      setShowRecipes(true);
+    try {
+      const result = await getRecom(ingredients);
+      const str = JSON.stringify(Object.values(result)).replace(
+        /[\[\]']+/g,
+        '',
+      );
+      fetchData(str);
+    } catch (error) {
+      console.error(error);
+    } finally {
       setLoading(false);
-    }, 2000);
+    }
   };
 
   const handleSearch = () => {
-    // perform search with searchValue
-    // 'http://192.168.100.22:3000/recipe?ingredients='
     setShowRecipes(false);
     const searchResult = searchValue.split(',').filter(Boolean);
     const ingredientList = searchResult.map(str => str.trim());
-    console.log('Search with:', searchValue, ingredientList);
     fetchRecipes(ingredientList);
-    Keyboard.dismiss(); // hide the keyboard after the search is performed
+    Keyboard.dismiss();
   };
 
   useEffect(() => {
@@ -97,7 +112,7 @@ const Search = ({navigation}) => {
       {renderSearchBar()}
       {showRecipes ? (
         <FlatList
-          data={recipes.categories}
+          data={recipes}
           keyExtractor={item => `${item.id}`}
           keyboardDismissMode="on-drag"
           showsVerticalScrollIndicator={false}
@@ -109,9 +124,9 @@ const Search = ({navigation}) => {
           }
           renderItem={({item}) => {
             return (
-              <CategoryCard
+              <RecipeCard
                 containerStyle={{marginHorizontal: SIZES.padding}}
-                categoryItem={item}
+                item={item}
                 onPress={() => navigation.navigate('Recipe', {recipe: item})}
               />
             );

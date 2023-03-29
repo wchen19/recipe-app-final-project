@@ -4,9 +4,8 @@ import FastImage from 'react-native-fast-image';
 
 import {COLORS, FONTS, IMG, SIZES} from '../constants';
 
-const RecipeCard = ({containerStyle, categoryItem, onPress}) => {
-  const imagePath = IMG[categoryItem.image_name];
-
+const RecipeCard = ({containerStyle, item, onPress}) => {
+  const imagePath = IMG[item?.image_name];
   return (
     <TouchableOpacity
       style={{
@@ -30,7 +29,7 @@ const RecipeCard = ({containerStyle, categoryItem, onPress}) => {
       />
       <View style={{width: '65%', paddingHorizontal: 20}}>
         <Text style={{flex: 1, color: COLORS.lightGreen1, ...FONTS.h2}}>
-          {categoryItem?.title}
+          {item?.title}
         </Text>
         <Text
           style={{
@@ -38,9 +37,9 @@ const RecipeCard = ({containerStyle, categoryItem, onPress}) => {
             color: COLORS.lightGray2,
             ...FONTS.body4,
           }}>
-          {categoryItem?.viewers == 0
+          {item?.viewers == 0
             ? 'Be the first one to try this'
-            : `${categoryItem?.viewers} Viewes`}
+            : `${item?.viewers} Viewes`}
         </Text>
       </View>
     </TouchableOpacity>
