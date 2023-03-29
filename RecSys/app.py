@@ -28,16 +28,7 @@ def recommend_recipe():
     response = {}
     count = 0
     for index, row in recipe.iterrows():
-        response[count] = {
-            'id': int(row['id']),
-            'recipe': str(row['recipe']),
-            'ingredients': str(row['ingredients']),
-            'instruction': str(row['instruction']),
-            'image_name': str(row['image_name']),
-            'bookmarked': str(row['bookmarked']),
-            'viewers': str(row['viewers']),
-            'score': str(row['score']),
-        }
+        response[count] =  int(row['id'])
         count += 1
     return jsonify(response)
    
