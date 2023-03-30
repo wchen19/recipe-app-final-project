@@ -74,7 +74,7 @@ const RecipeCardInfo = ({recipeItem, onBookmarkPress}) => {
 
 const BigRecipeCard = ({containerStyle, recipeItem, onPress}) => {
   const imagePath = IMG[recipeItem.image_name];
-  const [isBookmarked, setIsBookmarked] = useState(recipeItem?.bookmarked);
+  const [isBookmarked, setIsBookmarked] = useState(recipeItem.bookmarked);
 
   const toggleBookmark = async () => {
     console.log('1');
@@ -98,7 +98,13 @@ const BigRecipeCard = ({containerStyle, recipeItem, onPress}) => {
         backgroundColor: COLORS.lightGray,
         ...containerStyle,
       }}
-      onPress={onPress}>
+      onPress={() => {
+        onPress();
+        const addViewers = async () => {
+          await api.addViewers(recipeItem.id).catch(err => console.log(err));
+        };
+        addViewers();
+      }}>
       <FastImage
         source={imagePath}
         resizeMode="cover"

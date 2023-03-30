@@ -167,7 +167,7 @@ const Recipe = ({navigation, route}) => {
             style={{marginTop: 5, color: COLORS.lightGray2, ...FONTS.body3}}>
             {selectedRecipe?.viewers == 0
               ? 'Be the first one to try this'
-              : `${selectedRecipe?.viewers} Viewes`}
+              : `${selectedRecipe?.viewers} Views`}
           </Text>
         </View>
       </View>

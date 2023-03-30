@@ -2,7 +2,7 @@ import React from 'react';
 import {View, TouchableOpacity, Text, Image} from 'react-native';
 import FastImage from 'react-native-fast-image';
 
-import {COLORS, FONTS, IMG, SIZES} from '../constants';
+import {COLORS, FONTS, IMG, SIZES, api} from '../constants';
 
 const RecipeCard = ({containerStyle, item, onPress}) => {
   const imagePath = IMG[item?.image_name];
@@ -17,7 +17,13 @@ const RecipeCard = ({containerStyle, item, onPress}) => {
         backgroundColor: COLORS.gray2,
         ...containerStyle,
       }}
-      onPress={onPress}>
+      onPress={() => {
+        onPress();
+        const addViewers = async id => {
+          await api.addViewers(id).catch(err => console.log(err));
+        };
+        addViewers(item.id);
+      }}>
       <FastImage
         source={imagePath}
         resizeMode="cover"
