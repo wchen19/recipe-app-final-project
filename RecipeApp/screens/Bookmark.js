@@ -24,6 +24,7 @@ const Bookmark = ({navigation}) => {
     <SafeAreaView
       style={{
         flex: 1,
+        paddingTop: SIZES.radius,
         backgroundColor: COLORS.white,
       }}>
       <FlatList

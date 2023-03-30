@@ -76,7 +76,7 @@ const Search = ({navigation}) => {
           ref={inputRef}
           style={{marginLeft: SIZES.radius, ...FONTS.body3}}
           placeholderTextColor={COLORS.gray}
-          placeholder="Enter ingredients separated by comma"
+          placeholder="Search using ingredients"
           value={searchValue}
           onChangeText={value => setSearchValue(value)}
           autoFocus={true}
@@ -106,6 +106,7 @@ const Search = ({navigation}) => {
     <View
       style={{
         flex: 1,
+        paddingTop: SIZES.radius,
         backgroundColor: COLORS.white,
         alignItems: 'center',
       }}>

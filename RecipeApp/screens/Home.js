@@ -116,7 +116,12 @@ const Home = ({navigation}) => {
   const renderTop10Section = () => {
     return (
       <View style={{marginTop: SIZES.padding}}>
-        <Text style={{marginHorizontal: SIZES.padding, ...FONTS.h2}}>
+        <Text
+          style={{
+            marginHorizontal: SIZES.padding,
+            color: COLORS.darkGreen,
+            ...FONTS.h2,
+          }}>
           Top 10 Recipe
         </Text>
 
@@ -148,7 +153,9 @@ const Home = ({navigation}) => {
           marginTop: 20,
           marginHorizontal: SIZES.padding,
         }}>
-        <Text style={{flex: 1, ...FONTS.h2}}>Categories</Text>
+        <Text style={{flex: 1, color: COLORS.darkGreen, ...FONTS.h2}}>
+          Categories
+        </Text>
 
         <TouchableOpacity>
           <Text style={{color: COLORS.gray, ...FONTS.body4}}>View All</Text>
