@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   View,
   TouchableOpacity,
@@ -9,10 +9,10 @@ import {
 } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {BlurView} from '@react-native-community/blur';
-import {SIZES, COLORS, FONTS, IMG} from '../constants';
+import {SIZES, COLORS, FONTS, IMG, api} from '../constants';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
-const RecipeCardDetails = ({recipeItem}) => {
+const RecipeCardDetails = ({recipeItem, onBookmarkPress}) => {
   return (
     <View
       style={{
@@ -33,23 +33,27 @@ const RecipeCardDetails = ({recipeItem}) => {
           }}>
           {recipeItem?.title}
         </Text>
-
-        <Icon
-          name={recipeItem?.bookmarked ? 'bookmark' : 'bookmark-border'}
-          size={20}
-          color={COLORS.lime}
-          style={{marginRight: SIZES.base}}
-        />
+        <TouchableOpacity onPress={onBookmarkPress}>
+          <Icon
+            name={recipeItem?.bookmarked ? 'bookmark' : 'bookmark-border'}
+            size={20}
+            color={COLORS.lime}
+            style={{marginRight: SIZES.base}}
+          />
+        </TouchableOpacity>
       </View>
     </View>
   );
 };
 
-const RecipeCardInfo = ({recipeItem}) => {
+const RecipeCardInfo = ({recipeItem, onBookmarkPress}) => {
   if (Platform.OS === 'ios') {
     return (
       <BlurView blurType="dark" style={styles.recipeCardContainer}>
-        <RecipeCardDetails recipeItem={recipeItem} />
+        <RecipeCardDetails
+          recipeItem={recipeItem}
+          onBookmarkPress={onBookmarkPress}
+        />
       </BlurView>
     );
   } else {
@@ -59,15 +63,30 @@ const RecipeCardInfo = ({recipeItem}) => {
           ...styles.recipeCardContainer,
           backgroundColor: COLORS.transparentDarkGray,
         }}>
-        <RecipeCardDetails recipeItem={recipeItem} />
+        <RecipeCardDetails
+          recipeItem={recipeItem}
+          onBookmarkPress={onBookmarkPress}
+        />
       </View>
     );
   }
 };
 
 const BigRecipeCard = ({containerStyle, recipeItem, onPress}) => {
-  // console.log(recipeItem.image_name);
   const imagePath = IMG[recipeItem.image_name];
+  const [isBookmarked, setIsBookmarked] = useState(recipeItem?.bookmarked);
+
+  const toggleBookmark = async () => {
+    console.log('1');
+    try {
+      await api.toggleBookmark(recipeItem.id);
+      setIsBookmarked(!isBookmarked);
+      console.log('toggle');
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <TouchableOpacity
       style={{
@@ -87,7 +106,10 @@ const BigRecipeCard = ({containerStyle, recipeItem, onPress}) => {
       />
 
       {/* Category */}
-      <RecipeCardInfo recipeItem={recipeItem} />
+      <RecipeCardInfo
+        recipeItem={{...recipeItem, bookmarked: isBookmarked}}
+        onBookmarkPress={toggleBookmark}
+      />
     </TouchableOpacity>
   );
 };

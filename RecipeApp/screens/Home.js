@@ -15,7 +15,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const MAX_RECIPES = 10;
 
-// search -> recsys
+// limit judul biar muat, all recipe, random, of the day
 
 const Home = ({navigation}) => {
   const [recipes, setRecipes] = useState([]);
