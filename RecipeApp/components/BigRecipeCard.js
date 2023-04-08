@@ -30,7 +30,11 @@ const RecipeCardDetails = ({recipeItem, onBookmarkPress}) => {
             color: COLORS.white,
             ...FONTS.h3,
             fontSize: 18,
-          }}>
+            overflow: 'hidden',
+            paddingRight: 10,
+          }}
+          numberOfLines={3}
+          ellipsizeMode="tail">
           {recipeItem?.title}
         </Text>
         <TouchableOpacity onPress={onBookmarkPress}>

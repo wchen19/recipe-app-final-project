@@ -34,7 +34,15 @@ const RecipeCard = ({containerStyle, item, onPress}) => {
         }}
       />
       <View style={{width: '65%', paddingHorizontal: 20}}>
-        <Text style={{flex: 1, color: COLORS.lightGreen1, ...FONTS.h2}}>
+        <Text
+          style={{
+            flex: 1,
+            color: COLORS.lightGreen1,
+            overflow: 'hidden',
+            ...FONTS.h2,
+          }}
+          numberOfLines={2}
+          ellipsizeMode="tail">
           {item?.title}
         </Text>
         <Text
