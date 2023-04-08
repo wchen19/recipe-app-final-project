@@ -120,7 +120,11 @@ const Recipe = ({navigation, route}) => {
           paddingTop: 1000,
         }}>
         <Animated.Image
-          source={selectedRecipe?.image_name && IMG[selectedRecipe?.image_name]}
+          source={
+            selectedRecipe?.image_name
+              ? IMG[selectedRecipe?.image_name]
+              : require('../constants/images/null.jpg')
+          }
           resizeMode="contain"
           style={{
             height: HEADER_HEIGHT,
