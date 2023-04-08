@@ -8,6 +8,7 @@ import {
   FlatList,
   ActivityIndicator,
 } from 'react-native';
+import FastImage from 'react-native-fast-image';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {RecipeCard} from '../components';
 import {COLORS, SIZES, FONTS, getRecom, api} from '../constants';
@@ -97,7 +98,9 @@ const Search = ({navigation}) => {
           marginTop: 20,
           marginHorizontal: SIZES.padding,
         }}>
-        <Text style={{flex: 1, ...FONTS.h2}}>Search Result</Text>
+        <Text style={{flex: 1, color: COLORS.darkGreen, ...FONTS.h2}}>
+          Search Result
+        </Text>
       </View>
     );
   };
@@ -134,13 +137,30 @@ const Search = ({navigation}) => {
           }}
           ListFooterComponent={<View style={{marginBottom: 70}} />}
         />
+      ) : loading ? (
+        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+          <ActivityIndicator size="large" color={COLORS.primary} />
+        </View>
       ) : (
-        loading && (
-          <View
-            style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-            <ActivityIndicator size="large" color={COLORS.primary} />
-          </View>
-        )
+        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+          <Text
+            style={{
+              color: COLORS.transparentBlack3,
+              ...FONTS.h3,
+              fontSize: 18,
+            }}>
+            Input ingredients seperated by comma
+          </Text>
+          <FastImage
+            source={require('../constants/images/Search.jpg')}
+            style={{
+              width: 350,
+              height: 350,
+              opacity: 0.3,
+              borderRadius: SIZES.radius,
+            }}
+          />
+        </View>
       )}
     </View>
   );
