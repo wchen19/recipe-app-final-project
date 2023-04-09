@@ -2,7 +2,7 @@ import React from 'react';
 import {View, KeyboardAvoidingView} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
-import {Home, Search, Bookmark} from '../screens';
+import {Home, Search, Bookmark, AllRecipe} from '../screens';
 import {TabIcon} from '../components';
 import {COLORS} from '../constants';
 
@@ -44,6 +44,15 @@ const Tabs = () => {
           options={{
             tabBarIcon: ({focused}) => (
               <TabIcon focused={focused} icon="search" />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="AllRecipe"
+          component={AllRecipe}
+          options={{
+            tabBarIcon: ({focused}) => (
+              <TabIcon focused={focused} icon="menu-book" />
             ),
           }}
         />
