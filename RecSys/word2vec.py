@@ -22,8 +22,8 @@ avg_len = float(sum(lengths)) / len(lengths)
 sg = 0 # CBOW: build a language model that correctly predicts the center word given the context words in which the center word appears
 workers = 8 # number of CPUs
 window = avg_len # window size: average length of each document 
-min_count = 7 # unique ingredients are important to decide recipes 
-vector_size = 300 # dimensionality of the word vectors produced by the model
+min_count = 10 # unique ingredients are important to decide recipes 
+vector_size = 350 # dimensionality of the word vectors produced by the model
 negative = 20 # number of negative samples to use for each positive sample during training
 
 model_cbow = Word2Vec(corpus, sg=sg, workers=workers, window=window, min_count=min_count, vector_size=vector_size, negative=negative)

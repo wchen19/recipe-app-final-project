@@ -25,12 +25,15 @@ def recommend_recipe():
     print(ingredients)
     recipe = rec_sys.get_recs(ingredients, 20)
     
-    response = {}
-    count = 0
+    response = []
     for index, row in recipe.iterrows():
-        response[count] =  int(row['id'])
-        count += 1
-    return jsonify(response)
+        recipe_dict = {
+            'id': int(row['id']),
+            'title': str(row['recipe']),
+            'parsed_ingredients': row['ingredients_parsed']
+        }
+        response.append(recipe_dict)
+    return jsonify({'recipes': response})
    
 
 if __name__ == "__main__":

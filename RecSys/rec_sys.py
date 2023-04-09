@@ -13,13 +13,14 @@ from collections import defaultdict
 def get_recommendations(N, scores):
     df_recipes = pd.read_csv('./assets/recipes_parsed.csv')
     top = sorted(range(len(scores)), key=lambda i: scores[i], reverse=True)[:N]
-    recommendation = pd.DataFrame(columns=["recipe", "ingredients", "instruction", 'image_name', 'bookmarked', 'viewers', "score"])
+    recommendation = pd.DataFrame(columns=["recipe", "ingredients", "instruction", 'image_name', 'bookmarked', 'viewers', "score", "ingredients_parsed"])
     count = 0
     
     for i in top:
         recommendation.at[count, "id"] = df_recipes["id"][i]
         recommendation.at[count, "recipe"] = df_recipes["title"][i]
         recommendation.at[count, "ingredients"] = df_recipes["cleaned_ingredient"][i]
+        recommendation.at[count, "ingredients_parsed"] = df_recipes["ingredients_parsed"][i]
         recommendation.at[count, "instruction"] = df_recipes["instruction"][i]
         recommendation.at[count, "image_name"] = df_recipes["image_name"][i]
         recommendation.at[count, "bookmarked"] = df_recipes["bookmarked"][i]
