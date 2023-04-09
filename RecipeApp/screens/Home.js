@@ -10,25 +10,20 @@ import {
 } from 'react-native';
 
 import {FONTS, COLORS, SIZES, api} from '../constants';
-import {RecipeCard, BigRecipeCard} from '../components';
+import {BigRecipeCard} from '../components';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
-const MAX_RECIPES = 10;
-
-// limit judul biar muat, all recipe, random, of the day
+// random recipe and loading
 
 const Home = ({navigation}) => {
   const [recipes, setRecipes] = useState([]);
-  const [limitedRecipes, setLimitedRecipes] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
       await api
-        .getRecipe()
+        .getMostViewedRecipes()
         .then(response => {
-          setRecipes(response.data);
-          const limitedRecipes = response.data.slice(0, MAX_RECIPES);
-          setLimitedRecipes(limitedRecipes);
+          setRecipes(response.data.slice(0, 10));
         })
         .catch(error => console.error(error));
     };
@@ -126,7 +121,7 @@ const Home = ({navigation}) => {
         </Text>
 
         <FlatList
-          data={limitedRecipes}
+          data={recipes}
           horizontal
           showsHorizontalScrollIndicator={false}
           keyExtractor={item => `${item.id}`}
@@ -144,62 +139,23 @@ const Home = ({navigation}) => {
     );
   };
 
-  const renderRecipeHeader = () => {
-    return (
-      <View
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          marginTop: 20,
-          marginHorizontal: SIZES.padding,
-        }}>
-        <Text style={{flex: 1, color: COLORS.darkGreen, ...FONTS.h2}}>
-          Categories
-        </Text>
-
-        <TouchableOpacity>
-          <Text style={{color: COLORS.gray, ...FONTS.body4}}>View All</Text>
-        </TouchableOpacity>
-      </View>
-    );
-  };
-
   return (
     <SafeAreaView
       style={{
         flex: 1,
         backgroundColor: COLORS.white,
+        marginBottom: 70,
       }}>
-      <FlatList
-        data={limitedRecipes}
-        keyExtractor={item => `${item.id}`}
-        keyboardDismissMode="on-drag"
-        showsVerticalScrollIndicator={false}
-        ListHeaderComponent={
-          <View>
-            {/* Header */}
-            {renderHeader()}
-            {/* Search Bar */}
-            {renderSearchBar()}
-            {/* See Recipe Card */}
-            {renderSeeRecipeCard()}
-            {/* Top 10 Section */}
-            {renderTop10Section()}
-            {/* Recipe Header */}
-            {renderRecipeHeader()}
-          </View>
-        }
-        renderItem={({item}) => {
-          return (
-            <RecipeCard
-              containerStyle={{marginHorizontal: SIZES.padding}}
-              item={item}
-              onPress={() => navigation.navigate('Recipe', {recipe: item})}
-            />
-          );
-        }}
-        ListFooterComponent={<View style={{marginBottom: 70}} />}
-      />
+      <View>
+        {/* Header */}
+        {renderHeader()}
+        {/* Search Bar */}
+        {renderSearchBar()}
+        {/* See Recipe Card */}
+        {renderSeeRecipeCard()}
+        {/* Top 10 Section */}
+        {renderTop10Section()}
+      </View>
     </SafeAreaView>
   );
 };
