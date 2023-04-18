@@ -27,13 +27,10 @@ def recommend_recipe():
     
     response = []
     for index, row in recipe.iterrows():
-        recipe_dict = {
-            'id': int(row['id']),
-            'title': str(row['recipe']),
-            'parsed_ingredients': row['ingredients_parsed']
-        }
-        response.append(recipe_dict)
-    return jsonify({'recipes': response})
+        ids = recipe['id'].tolist()
+        response = {'recipes': ids}
+    return jsonify(response)
+
    
 
 if __name__ == "__main__":
