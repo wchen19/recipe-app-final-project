@@ -88,7 +88,11 @@ const Search = ({navigation}) => {
         <Icon name="search" size={30} color={COLORS.gray} />
         <TextInput
           ref={inputRef}
-          style={{marginLeft: SIZES.radius, ...FONTS.body3}}
+          style={{
+            marginLeft: SIZES.radius,
+            color: COLORS.black,
+            ...FONTS.body3,
+          }}
           placeholderTextColor={COLORS.gray}
           placeholder="Search using ingredients"
           value={searchValue}
