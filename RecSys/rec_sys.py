@@ -80,7 +80,7 @@ class TfidfEmbeddingVectorizer(object):
     
 def get_recs(ingredients, N=5):
     model = Word2Vec.load('./models/model_cbow.bin')
-    model.init_sims(replace=True)
+    model.wv.get_normed_vectors()
     if model:
         print("Successfully loaded model")
         
