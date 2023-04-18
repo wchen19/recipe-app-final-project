@@ -21,6 +21,18 @@ const HEADER_HEIGHT = 300;
 const Recipe = ({navigation, route}) => {
   const [selectedRecipe, setSelectedRecipe] = useState(null);
   const scrollY = useRef(new Animated.Value(0)).current;
+  const [isBookmarked, setIsBookmarked] = useState(recipeItem.bookmarked);
+
+  const toggleBookmark = async () => {
+    console.log('1');
+    try {
+      await api.toggleBookmark(recipeItem.id);
+      setIsBookmarked(!isBookmarked);
+      console.log('toggle');
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
     let {recipe} = route.params;
@@ -103,8 +115,9 @@ const Recipe = ({navigation, route}) => {
             justifyContent: 'center',
             height: 35,
             width: 35,
-          }}>
-          <Icon name="bookmark-border" size={30} color={COLORS.lime} />
+          }}
+          onPress={toggleBookmark}>
+          <Icon name={selectedRecipe?.bookmarked ? 'bookmark' : 'bookmark-border'} size={30} color={COLORS.lime} />
         </TouchableOpacity>
       </View>
     );
