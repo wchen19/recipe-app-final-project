@@ -4,6 +4,8 @@ const API_BASE_URL = 'http://192.168.100.22:3000';
 
 const api = {
   getRecipe: () => axios.get(`${API_BASE_URL}/recipe`, {withCredentials: true}),
+  getRandomRecipe: () =>
+    axios.get(`${API_BASE_URL}/random/recipe`, {withCredentials: true}),
   getBookmarkedRecipes: () => axios.get(`${API_BASE_URL}/bookmarked/recipe`),
   getLeastViewedRecipes: () => axios.get(`${API_BASE_URL}/least-viewed/recipe`),
   getMostViewedRecipes: () => axios.get(`${API_BASE_URL}/most-viewed/recipe`),

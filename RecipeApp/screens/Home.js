@@ -35,6 +35,16 @@ const Home = ({navigation}) => {
     fetchData();
   }, []);
 
+  const fetchRecipe = async () => {
+    await api
+      .getRandomRecipe()
+      .then(response => {
+        console.log(response.data);
+        navigation.navigate('Recipe', {recipe: response.data[0]});
+      })
+      .catch(error => console.log(error));
+  };
+
   const renderHeader = () => {
     return (
       <View
@@ -95,9 +105,7 @@ const Home = ({navigation}) => {
             style={{width: '70%', color: COLORS.lightGray2, ...FONTS.body4}}>
             You have bla bla bla lba bla bla
           </Text>
-          <TouchableOpacity
-            style={{marginTop: 10}}
-            onPress={() => navigation.navigate('Bookmark')}>
+          <TouchableOpacity style={{marginTop: 10}} onPress={fetchRecipe}>
             <Text
               style={{
                 color: COLORS.darkGreen,
@@ -121,24 +129,34 @@ const Home = ({navigation}) => {
             color: COLORS.darkGreen,
             ...FONTS.h2,
           }}>
-          Top 10 Recipe
+          Top 10 Most Viewed Recipe
         </Text>
-
-        <FlatList
-          data={recipes}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          keyExtractor={item => `${item.id}`}
-          renderItem={({item, index}) => {
-            return (
-              <BigRecipeCard
-                containerStyle={{marginLeft: index == 0 ? SIZES.padding : 0}}
-                recipeItem={item}
-                onPress={() => navigation.navigate('Recipe', {recipe: item})}
-              />
-            );
-          }}
-        />
+        {loading ? (
+          <View
+            style={{
+              marginTop: 100,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <ActivityIndicator size="large" color={COLORS.primary} />
+          </View>
+        ) : (
+          <FlatList
+            data={recipes}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            keyExtractor={item => `${item.id}`}
+            renderItem={({item, index}) => {
+              return (
+                <BigRecipeCard
+                  containerStyle={{marginLeft: index == 0 ? SIZES.padding : 0}}
+                  recipeItem={item}
+                  onPress={() => navigation.navigate('Recipe', {recipe: item})}
+                />
+              );
+            }}
+          />
+        )}
       </View>
     );
   };
@@ -158,14 +176,7 @@ const Home = ({navigation}) => {
         {/* See Recipe Card */}
         {renderSeeRecipeCard()}
         {/* Top 10 Section */}
-        {loading ? (
-          <View
-            style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-            <ActivityIndicator size="large" color={COLORS.primary} />
-          </View>
-        ) : (
-          renderTop10Section()
-        )}
+        {renderTop10Section()}
       </View>
     </SafeAreaView>
   );
