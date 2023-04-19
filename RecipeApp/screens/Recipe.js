@@ -21,12 +21,12 @@ const HEADER_HEIGHT = 300;
 const Recipe = ({navigation, route}) => {
   const [selectedRecipe, setSelectedRecipe] = useState(null);
   const scrollY = useRef(new Animated.Value(0)).current;
-  const [isBookmarked, setIsBookmarked] = useState(recipeItem.bookmarked);
+  const [isBookmarked, setIsBookmarked] = useState(selectedRecipe?.bookmarked);
 
   const toggleBookmark = async () => {
     console.log('1');
     try {
-      await api.toggleBookmark(recipeItem.id);
+      await api.toggleBookmark(selectedRecipe?.id);
       setIsBookmarked(!isBookmarked);
       console.log('toggle');
     } catch (error) {
@@ -117,7 +117,11 @@ const Recipe = ({navigation, route}) => {
             width: 35,
           }}
           onPress={toggleBookmark}>
-          <Icon name={selectedRecipe?.bookmarked ? 'bookmark' : 'bookmark-border'} size={30} color={COLORS.lime} />
+          <Icon
+            name={selectedRecipe?.bookmarked ? 'bookmark' : 'bookmark-border'}
+            size={30}
+            color={COLORS.lime}
+          />
         </TouchableOpacity>
       </View>
     );
