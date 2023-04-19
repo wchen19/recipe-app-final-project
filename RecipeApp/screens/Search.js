@@ -12,7 +12,6 @@ import FastImage from 'react-native-fast-image';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {RecipeCard} from '../components';
 import {COLORS, SIZES, FONTS, getRecom, api} from '../constants';
-import {medium} from '@cloudinary/base/qualifiers/fontHinting';
 
 const Search = ({navigation}) => {
   const [recipes, setRecipes] = useState({});

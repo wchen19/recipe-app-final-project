@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   TextInput,
   FlatList,
+  ActivityIndicator,
 } from 'react-native';
 
 import {FONTS, COLORS, SIZES, api} from '../constants';
@@ -17,13 +18,16 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const Home = ({navigation}) => {
   const [recipes, setRecipes] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    setLoading(true);
     const fetchData = async () => {
       await api
         .getMostViewedRecipes()
         .then(response => {
           setRecipes(response.data.slice(0, 10));
+          setLoading(false);
         })
         .catch(error => console.error(error));
     };
@@ -154,7 +158,14 @@ const Home = ({navigation}) => {
         {/* See Recipe Card */}
         {renderSeeRecipeCard()}
         {/* Top 10 Section */}
-        {renderTop10Section()}
+        {loading ? (
+          <View
+            style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+            <ActivityIndicator size="large" color={COLORS.primary} />
+          </View>
+        ) : (
+          renderTop10Section()
+        )}
       </View>
     </SafeAreaView>
   );
