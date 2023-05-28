@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import {
   View,
   Text,
@@ -13,21 +13,21 @@ import {
 import {FONTS, COLORS, SIZES, api} from '../constants';
 import {RecipeCard} from '../components';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-
-// limit judul biar muat, all recipe, random, of the day, handle image null, search resep ilustrasi, update nama image_name
+import {UserContext} from '../UserContext';
 
 const AllRecipe = ({navigation}) => {
   const [recipes, setRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [recipeLimit, setRecipeLimit] = useState(10);
   const [limitedRecipes, setLimitedRecipes] = useState([]);
+  const {userId} = useContext(UserContext);
 
   useEffect(() => {
     setLoading(true);
     setRecipeLimit(10);
     const fetchData = async () => {
       await api
-        .getRecipe()
+        .getRecipe(userId)
         .then(response => {
           setRecipes(response.data);
           const limitedRecipes = response.data.slice(0, 10);

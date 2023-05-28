@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useContext, useState} from 'react';
 import {
   View,
   TouchableOpacity,
@@ -11,6 +11,7 @@ import FastImage from 'react-native-fast-image';
 import {BlurView} from '@react-native-community/blur';
 import {SIZES, COLORS, FONTS, IMG, api} from '../constants';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import {UserContext} from '../UserContext';
 
 const RecipeCardDetails = ({recipeItem, onBookmarkPress}) => {
   return (
@@ -79,15 +80,25 @@ const RecipeCardInfo = ({recipeItem, onBookmarkPress}) => {
 const BigRecipeCard = ({containerStyle, recipeItem, onPress}) => {
   const imagePath = IMG[recipeItem.image_name];
   const [isBookmarked, setIsBookmarked] = useState(recipeItem.bookmarked);
+  const {userId} = useContext(UserContext);
 
   const toggleBookmark = async () => {
-    console.log('1');
-    try {
-      await api.toggleBookmark(recipeItem.id);
-      setIsBookmarked(!isBookmarked);
-      console.log('toggle');
-    } catch (error) {
-      console.log(error);
+    if (isBookmarked) {
+      console.log('unbookmark');
+      await api
+        .updateBookmarkedRecipes(userId, recipeItem.id, 'unbookmark')
+        .then(response => {
+          setIsBookmarked(!isBookmarked);
+        })
+        .catch(error => console.error(error));
+    } else {
+      console.log('bookmark');
+      await api
+        .updateBookmarkedRecipes(userId, recipeItem.id, 'bookmark')
+        .then(response => {
+          setIsBookmarked(!isBookmarked);
+        })
+        .catch(error => console.error(error));
     }
   };
 

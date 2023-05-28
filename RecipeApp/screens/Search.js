@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect, useRef, useContext} from 'react';
 import {
   View,
   Text,
@@ -12,6 +12,9 @@ import FastImage from 'react-native-fast-image';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {RecipeCard} from '../components';
 import {COLORS, SIZES, FONTS, getRecom, api} from '../constants';
+import {UserContext} from '../UserContext';
+import {levenshteinDistance} from 'fast-levenshtein';
+import RNFS from 'react-native-fs';
 
 const Search = ({navigation}) => {
   const [recipes, setRecipes] = useState({});
@@ -20,11 +23,69 @@ const Search = ({navigation}) => {
   const [loading, setLoading] = useState(false);
   const [recipeLimit, setRecipeLimit] = useState(10);
   const [limitedRecipes, setLimitedRecipes] = useState([]);
+  const [isFocused, setIsFocused] = useState(false);
+  const [searchHistory, setSearchHistory] = useState([]);
   const inputRef = useRef(null);
+  const {userId} = useContext(UserContext);
+  const [suggestions, setSuggestions] = useState([]);
+
+  const handleFocus = () => {
+    setIsFocused(true);
+  };
+
+  const handleBlur = () => {
+    setIsFocused(false);
+  };
+
+  const handleTypoCorrection = () => {
+    const correctedIngredients = [];
+    let hasTypo = false;
+    // Array of suggestions for typo correction
+    console.log('in');
+
+    ingredients.forEach(ingredient => {
+      let correctedValue = searchValue;
+      let minDistance = Infinity;
+
+      // Find the closest suggestion to the search value
+      suggestions.forEach(suggestion => {
+        const distance = levenshteinDistance(searchValue, suggestion);
+        if (distance < minDistance) {
+          correctedValue = suggestion;
+          minDistance = distance;
+        }
+      });
+      console.log(correctedValue);
+      if (correctedValue !== ingredient) {
+        hasTypo = true;
+        correctedIngredients.push(correctedValue);
+      } else {
+        correctedIngredients.push(ingredient);
+      }
+    });
+
+    if (hasTypo) {
+      // Typos detected, show confirmation
+      Alert.alert(
+        'Typo Correction',
+        'Some ingredients have typos. Do you want to correct them?',
+        [
+          {text: 'Search', style: 'cancel', onPress: () => handleSearch()},
+          {
+            text: 'Correct Typo',
+            onPress: () => setSearchValue(correctedIngredients),
+          },
+        ],
+      );
+    } else {
+      // No typos detected, proceed with the search
+      handleSearch();
+    }
+  };
 
   const fetchData = async ids => {
     await api
-      .getRecipesByIds(ids)
+      .getRecipesByIds(ids, userId)
       .then(response => {
         setRecipes(response.data);
         const limitedRecipes = response.data.slice(0, 10);
@@ -41,16 +102,29 @@ const Search = ({navigation}) => {
     }
   }, [recipeLimit]);
 
+  const addSearchHistory = async text => {
+    console.log(text);
+    await api
+      .updateSearchHistory(userId, text)
+      .then(response => {
+        console.log('update');
+        setSearchHistory(prevSearchHistory => [...prevSearchHistory, text]);
+      })
+      .catch(error => console.log(error));
+  };
+
   const fetchRecipes = async ingredients => {
     setLoading(true);
     setRecipeLimit(10);
+
     try {
       const result = await getRecom(ingredients);
-      const str = JSON.stringify(Object.values(result)).replace(
+
+      const ids = JSON.stringify(Object.values(result)).replace(
         /[\[\]']+/g,
         '',
       );
-      fetchData(str);
+      fetchData(ids);
     } catch (error) {
       console.error(error);
     } finally {
@@ -60,15 +134,58 @@ const Search = ({navigation}) => {
 
   const handleSearch = () => {
     setShowRecipes(false);
+
+    console.log('search');
+    addSearchHistory(searchValue);
     const searchResult = searchValue.split(',').filter(Boolean);
     const ingredientList = searchResult.map(str => str.trim());
     fetchRecipes(ingredientList);
+
+    Keyboard.dismiss();
+  };
+
+  const handleSearchHistory = value => {
+    setShowRecipes(false);
+
+    console.log('search history');
+    console.log(value);
+    addSearchHistory(value);
+    const searchResult = value.split(',').filter(Boolean);
+    const ingredientList = searchResult.map(str => str.trim());
+    fetchRecipes(ingredientList);
+
     Keyboard.dismiss();
   };
 
   useEffect(() => {
     inputRef.current.focus();
     setShowRecipes(false);
+
+    const fetchData = async () => {
+      await api
+        .getSearchHistory(userId)
+        .then(response => {
+          setSearchHistory(response.data);
+        })
+        .catch(error => console.log(error));
+    };
+
+    const fetchTextFile = async () => {
+      try {
+        console.log('first');
+        const response = await fetch('file:///android_asset/suggestions.txt');
+        const text = await response.text();
+        const lines = text.split('\n');
+        setSuggestions(lines);
+        console.log(lines);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchTextFile();
+
+    fetchData();
   }, []);
 
   const renderSearchBar = () => {
@@ -96,10 +213,11 @@ const Search = ({navigation}) => {
           placeholder="Search using ingredients"
           value={searchValue}
           onChangeText={value => setSearchValue(value)}
-          autoFocus={true}
           returnKeyType="search"
-          onSubmitEditing={handleSearch}
+          onSubmitEditing={handleTypoCorrection}
           blurOnSubmit={false}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
         />
       </View>
     );
@@ -121,6 +239,50 @@ const Search = ({navigation}) => {
     );
   };
 
+  const renderSearchHistory = () => {
+    return (
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          marginTop: 20,
+          marginHorizontal: SIZES.padding,
+        }}>
+        <FlatList
+          data={searchHistory.slice(-5)}
+          renderItem={({item}) => (
+            <TouchableOpacity
+              style={{
+                padding: 20,
+                marginTop: 5,
+              }}
+              onPress={() => {
+                handleSearchHistory(item);
+                setSearchValue(item);
+              }}>
+              <Text
+                style={{
+                  ...FONTS.body3,
+                }}>
+                {item}
+              </Text>
+            </TouchableOpacity>
+          )}
+          keyExtractor={(item, index) => index.toString()}
+          ItemSeparatorComponent={
+            <View
+              style={{
+                height: 0.3,
+                backgroundColor: COLORS.lightGray2,
+                marginHorizontal: 8,
+              }}
+            />
+          }
+        />
+      </View>
+    );
+  };
+
   const handleLoadMore = () => {
     let limit = recipeLimit + 10;
     setRecipeLimit(limit);
@@ -136,7 +298,9 @@ const Search = ({navigation}) => {
         marginBottom: 70,
       }}>
       {renderSearchBar()}
-      {showRecipes ? (
+      {isFocused ? (
+        renderSearchHistory()
+      ) : showRecipes ? (
         <FlatList
           data={limitedRecipes}
           keyExtractor={item => `${item.id}`}

@@ -1,4 +1,4 @@
-import React, {useRef, useState, useEffect} from 'react';
+import React, {useRef, useState, useEffect, useContext} from 'react';
 import {
   View,
   Text,
@@ -13,7 +13,8 @@ import {
 import {BlurView} from '@react-native-community/blur';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
-import {SIZES, FONTS, COLORS, IMG} from '../constants';
+import {SIZES, FONTS, COLORS, IMG, api} from '../constants';
+import {UserContext} from '../UserContext';
 const {height} = Dimensions.get('window');
 
 const HEADER_HEIGHT = 300;
@@ -22,21 +23,32 @@ const Recipe = ({navigation, route}) => {
   const [selectedRecipe, setSelectedRecipe] = useState(null);
   const scrollY = useRef(new Animated.Value(0)).current;
   const [isBookmarked, setIsBookmarked] = useState(selectedRecipe?.bookmarked);
+  const {userId} = useContext(UserContext);
 
   const toggleBookmark = async () => {
-    console.log('1');
-    try {
-      await api.toggleBookmark(selectedRecipe?.id);
-      setIsBookmarked(!isBookmarked);
-      console.log('toggle');
-    } catch (error) {
-      console.log(error);
+    if (isBookmarked) {
+      console.log('unbookmark');
+      await api
+        .updateBookmarkedRecipes(userId, selectedRecipe?.id, 'unbookmark')
+        .then(response => {
+          setIsBookmarked(!isBookmarked);
+        })
+        .catch(error => console.error(error));
+    } else {
+      console.log('bookmark');
+      await api
+        .updateBookmarkedRecipes(userId, selectedRecipe?.id, 'bookmark')
+        .then(response => {
+          setIsBookmarked(!isBookmarked);
+        })
+        .catch(error => console.error(error));
     }
   };
 
   useEffect(() => {
     let {recipe} = route.params;
     setSelectedRecipe(recipe);
+    setIsBookmarked(recipe?.bookmarked);
   }, []);
 
   const renderHeaderBar = () => {
@@ -118,7 +130,7 @@ const Recipe = ({navigation, route}) => {
           }}
           onPress={toggleBookmark}>
           <Icon
-            name={selectedRecipe?.bookmarked ? 'bookmark' : 'bookmark-border'}
+            name={isBookmarked ? 'bookmark' : 'bookmark-border'}
             size={30}
             color={COLORS.lime}
           />

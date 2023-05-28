@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import {
   View,
   Text,
@@ -13,18 +13,18 @@ import {
 import {FONTS, COLORS, SIZES, api} from '../constants';
 import {BigRecipeCard} from '../components';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-
-// random recipe and loading
+import {UserContext} from '../UserContext';
 
 const Home = ({navigation}) => {
   const [recipes, setRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
+  const {userId} = useContext(UserContext);
 
   useEffect(() => {
     setLoading(true);
     const fetchData = async () => {
       await api
-        .getMostViewedRecipes()
+        .getMostViewedRecipes(userId)
         .then(response => {
           setRecipes(response.data.slice(0, 10));
           setLoading(false);
@@ -37,10 +37,9 @@ const Home = ({navigation}) => {
 
   const fetchRecipe = async () => {
     await api
-      .getRandomRecipe()
+      .getRandomRecipe(userId)
       .then(response => {
-        console.log(response.data);
-        navigation.navigate('Recipe', {recipe: response.data[0]});
+        navigation.navigate('Recipe', {recipe: response.data});
       })
       .catch(error => console.log(error));
   };
@@ -99,23 +98,25 @@ const Home = ({navigation}) => {
           borderRadius: 10,
           backgroundColor: COLORS.lightGreen,
         }}>
-        {/* Image */}
-        <View style={{flex: 1, padding: SIZES.radius}}>
+        <TouchableOpacity
+          style={{
+            flex: 1,
+            columnGap: 10,
+            flexDirection: 'row',
+            alignItems: 'center',
+            padding: SIZES.radius,
+          }}
+          onPress={fetchRecipe}>
+          <Icon name="casino" size={30} color={COLORS.lightGreen1} />
           <Text
-            style={{width: '70%', color: COLORS.lightGray2, ...FONTS.body4}}>
-            You have bla bla bla lba bla bla
+            style={{
+              width: '70%',
+              color: COLORS.lightGreen1,
+              ...FONTS.body3,
+            }}>
+            I'm Feeling Lucky
           </Text>
-          <TouchableOpacity style={{marginTop: 10}} onPress={fetchRecipe}>
-            <Text
-              style={{
-                color: COLORS.darkGreen,
-                textDecorationLine: 'underline',
-                ...FONTS.h4,
-              }}>
-              See Recipes
-            </Text>
-          </TouchableOpacity>
-        </View>
+        </TouchableOpacity>
       </View>
     );
   };

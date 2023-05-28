@@ -1,8 +1,6 @@
 import pandas as pd
 import numpy as np
 import requests
-import unidecode
-import ast
 
 from gensim.models import Word2Vec
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -78,7 +76,7 @@ class TfidfEmbeddingVectorizer(object):
     def word_average_list(self, docs):
         return np.vstack([self.word_average(sent) for sent in docs])
     
-def get_recs(ingredients, N=5):
+def get_recs(ingredients, N=20):
     model = Word2Vec.load('./models/model_cbow.bin')
     model.wv.get_normed_vectors()
     if model:

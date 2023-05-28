@@ -61,7 +61,7 @@ const Tabs = () => {
           component={Bookmark}
           options={{
             tabBarIcon: ({focused}) => (
-              <TabIcon focused={focused} icon="bookmark" />
+              <TabIcon focused={focused} icon="account-circle" />
             ),
           }}
         />
