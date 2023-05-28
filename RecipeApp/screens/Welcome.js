@@ -2,7 +2,6 @@ import {
   Dimensions,
   ImageBackground,
   SafeAreaView,
-  StyleSheet,
   Text,
   TouchableOpacity,
   View,

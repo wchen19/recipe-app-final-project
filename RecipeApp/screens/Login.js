@@ -1,12 +1,4 @@
-import {
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-  Alert,
-} from 'react-native';
+import {SafeAreaView, Text, TouchableOpacity, View, Alert} from 'react-native';
 import React, {useContext, useState} from 'react';
 import AppTextInput from '../components/AppTextInput';
 import {COLORS, FONTS, api} from '../constants';
@@ -76,17 +68,6 @@ const Login = ({navigation}) => {
             onChangeText={text => handleChange('password', text)}
           />
         </View>
-
-        {/* <View>
-          <Text
-            style={{
-              color: COLORS.blue,
-              alignSelf: 'flex-end',
-              ...FONTS.body4,
-            }}>
-            Forgot your password ?
-          </Text>
-        </View> */}
 
         <TouchableOpacity
           style={{

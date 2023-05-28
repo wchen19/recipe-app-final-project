@@ -1,21 +1,9 @@
 import React, {useRef, useState, useEffect, useContext} from 'react';
-import {
-  View,
-  Text,
-  Image,
-  Animated,
-  Platform,
-  TouchableOpacity,
-  ScrollView,
-  ImageBackground,
-  Dimensions,
-} from 'react-native';
-import {BlurView} from '@react-native-community/blur';
+import {View, Text, Animated, TouchableOpacity, Dimensions} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import {SIZES, FONTS, COLORS, IMG, api} from '../constants';
 import {UserContext} from '../UserContext';
-const {height} = Dimensions.get('window');
 
 const HEADER_HEIGHT = 300;
 
@@ -27,7 +15,6 @@ const Recipe = ({navigation, route}) => {
 
   const toggleBookmark = async () => {
     if (isBookmarked) {
-      console.log('unbookmark');
       await api
         .updateBookmarkedRecipes(userId, selectedRecipe?.id, 'unbookmark')
         .then(response => {
@@ -35,7 +22,6 @@ const Recipe = ({navigation, route}) => {
         })
         .catch(error => console.error(error));
     } else {
-      console.log('bookmark');
       await api
         .updateBookmarkedRecipes(userId, selectedRecipe?.id, 'bookmark')
         .then(response => {
@@ -320,11 +306,8 @@ const Recipe = ({navigation, route}) => {
         showsVerticalScrollIndicator={false}
         ListHeaderComponent={
           <View>
-            {/* HEader */}
             {renderRecipeCardHeader()}
-            {/* Indo */}
             {renderRecipeInfo()}
-            {/* Title */}
             {renderIngredientHeader()}
             {renderIngredients()}
             {renderInstruction()}

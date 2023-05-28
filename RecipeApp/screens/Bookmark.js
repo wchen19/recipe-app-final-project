@@ -11,7 +11,6 @@ import {
 
 import {FONTS, COLORS, SIZES, api} from '../constants';
 import {RecipeCard} from '../components';
-import Icon from 'react-native-vector-icons/MaterialIcons';
 import {UserContext} from '../UserContext';
 
 const Bookmark = ({navigation}) => {
@@ -45,7 +44,6 @@ const Bookmark = ({navigation}) => {
         })
         .catch(error => console.error(error));
     };
-    console.log(userId);
     fetchUserData();
     fetchData();
   }, []);

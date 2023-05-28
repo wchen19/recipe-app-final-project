@@ -1,12 +1,5 @@
 import React, {useContext, useState} from 'react';
-import {
-  View,
-  TouchableOpacity,
-  Image,
-  Text,
-  Platform,
-  StyleSheet,
-} from 'react-native';
+import {View, TouchableOpacity, Text, Platform, StyleSheet} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {BlurView} from '@react-native-community/blur';
 import {SIZES, COLORS, FONTS, IMG, api} from '../constants';
@@ -84,7 +77,6 @@ const BigRecipeCard = ({containerStyle, recipeItem, onPress}) => {
 
   const toggleBookmark = async () => {
     if (isBookmarked) {
-      console.log('unbookmark');
       await api
         .updateBookmarkedRecipes(userId, recipeItem.id, 'unbookmark')
         .then(response => {
@@ -92,7 +84,6 @@ const BigRecipeCard = ({containerStyle, recipeItem, onPress}) => {
         })
         .catch(error => console.error(error));
     } else {
-      console.log('bookmark');
       await api
         .updateBookmarkedRecipes(userId, recipeItem.id, 'bookmark')
         .then(response => {
@@ -126,7 +117,6 @@ const BigRecipeCard = ({containerStyle, recipeItem, onPress}) => {
         style={{width: 250, height: 350, borderRadius: SIZES.radius}}
       />
 
-      {/* Category */}
       <RecipeCardInfo
         recipeItem={{...recipeItem, bookmarked: isBookmarked}}
         onBookmarkPress={toggleBookmark}

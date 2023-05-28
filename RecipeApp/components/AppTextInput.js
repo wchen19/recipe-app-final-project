@@ -1,4 +1,4 @@
-import {StyleSheet, Text, TextInput, TextInputProps, View} from 'react-native';
+import {StyleSheet, TextInput} from 'react-native';
 import React, {useState} from 'react';
 import {COLORS, FONTS} from '../constants';
 
@@ -29,5 +29,3 @@ const AppTextInput = ({...otherProps}) => {
 };
 
 export default AppTextInput;
-
-const styles = StyleSheet.create({});

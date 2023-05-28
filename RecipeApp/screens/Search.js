@@ -13,8 +13,6 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import {RecipeCard} from '../components';
 import {COLORS, SIZES, FONTS, getRecom, api} from '../constants';
 import {UserContext} from '../UserContext';
-import {levenshteinDistance} from 'fast-levenshtein';
-import RNFS from 'react-native-fs';
 
 const Search = ({navigation}) => {
   const [recipes, setRecipes] = useState({});
@@ -27,7 +25,6 @@ const Search = ({navigation}) => {
   const [searchHistory, setSearchHistory] = useState([]);
   const inputRef = useRef(null);
   const {userId} = useContext(UserContext);
-  const [suggestions, setSuggestions] = useState([]);
 
   const handleFocus = () => {
     setIsFocused(true);
@@ -35,52 +32,6 @@ const Search = ({navigation}) => {
 
   const handleBlur = () => {
     setIsFocused(false);
-  };
-
-  const handleTypoCorrection = () => {
-    const correctedIngredients = [];
-    let hasTypo = false;
-    // Array of suggestions for typo correction
-    console.log('in');
-
-    ingredients.forEach(ingredient => {
-      let correctedValue = searchValue;
-      let minDistance = Infinity;
-
-      // Find the closest suggestion to the search value
-      suggestions.forEach(suggestion => {
-        const distance = levenshteinDistance(searchValue, suggestion);
-        if (distance < minDistance) {
-          correctedValue = suggestion;
-          minDistance = distance;
-        }
-      });
-      console.log(correctedValue);
-      if (correctedValue !== ingredient) {
-        hasTypo = true;
-        correctedIngredients.push(correctedValue);
-      } else {
-        correctedIngredients.push(ingredient);
-      }
-    });
-
-    if (hasTypo) {
-      // Typos detected, show confirmation
-      Alert.alert(
-        'Typo Correction',
-        'Some ingredients have typos. Do you want to correct them?',
-        [
-          {text: 'Search', style: 'cancel', onPress: () => handleSearch()},
-          {
-            text: 'Correct Typo',
-            onPress: () => setSearchValue(correctedIngredients),
-          },
-        ],
-      );
-    } else {
-      // No typos detected, proceed with the search
-      handleSearch();
-    }
   };
 
   const fetchData = async ids => {
@@ -103,11 +54,9 @@ const Search = ({navigation}) => {
   }, [recipeLimit]);
 
   const addSearchHistory = async text => {
-    console.log(text);
     await api
       .updateSearchHistory(userId, text)
       .then(response => {
-        console.log('update');
         setSearchHistory(prevSearchHistory => [...prevSearchHistory, text]);
       })
       .catch(error => console.log(error));
@@ -135,7 +84,6 @@ const Search = ({navigation}) => {
   const handleSearch = () => {
     setShowRecipes(false);
 
-    console.log('search');
     addSearchHistory(searchValue);
     const searchResult = searchValue.split(',').filter(Boolean);
     const ingredientList = searchResult.map(str => str.trim());
@@ -147,8 +95,6 @@ const Search = ({navigation}) => {
   const handleSearchHistory = value => {
     setShowRecipes(false);
 
-    console.log('search history');
-    console.log(value);
     addSearchHistory(value);
     const searchResult = value.split(',').filter(Boolean);
     const ingredientList = searchResult.map(str => str.trim());
@@ -169,21 +115,6 @@ const Search = ({navigation}) => {
         })
         .catch(error => console.log(error));
     };
-
-    const fetchTextFile = async () => {
-      try {
-        console.log('first');
-        const response = await fetch('file:///android_asset/suggestions.txt');
-        const text = await response.text();
-        const lines = text.split('\n');
-        setSuggestions(lines);
-        console.log(lines);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fetchTextFile();
 
     fetchData();
   }, []);
@@ -214,7 +145,7 @@ const Search = ({navigation}) => {
           value={searchValue}
           onChangeText={value => setSearchValue(value)}
           returnKeyType="search"
-          onSubmitEditing={handleTypoCorrection}
+          onSubmitEditing={handleSearch}
           blurOnSubmit={false}
           onFocus={handleFocus}
           onBlur={handleBlur}
@@ -306,12 +237,7 @@ const Search = ({navigation}) => {
           keyExtractor={item => `${item.id}`}
           keyboardDismissMode="on-drag"
           showsVerticalScrollIndicator={false}
-          ListHeaderComponent={
-            <View>
-              {/* Category Header */}
-              {renderSearchResultHeader()}
-            </View>
-          }
+          ListHeaderComponent={<View>{renderSearchResultHeader()}</View>}
           renderItem={({item}) => {
             return (
               <RecipeCard

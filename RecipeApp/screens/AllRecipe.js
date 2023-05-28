@@ -2,17 +2,14 @@ import React, {useState, useEffect, useContext} from 'react';
 import {
   View,
   Text,
-  Image,
   SafeAreaView,
   TouchableOpacity,
-  TextInput,
   FlatList,
   ActivityIndicator,
 } from 'react-native';
 
 import {FONTS, COLORS, SIZES, api} from '../constants';
 import {RecipeCard} from '../components';
-import Icon from 'react-native-vector-icons/MaterialIcons';
 import {UserContext} from '../UserContext';
 
 const AllRecipe = ({navigation}) => {

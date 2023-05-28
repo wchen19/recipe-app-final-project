@@ -1,13 +1,4 @@
-import {
-  Alert,
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-  Button,
-} from 'react-native';
+import {Alert, SafeAreaView, Text, TouchableOpacity, View} from 'react-native';
 import React, {useState} from 'react';
 import AppTextInput from '../components/AppTextInput';
 import DateTimePicker from '@react-native-community/datetimepicker';

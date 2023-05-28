@@ -2,7 +2,6 @@ import React, {useState, useEffect, useContext} from 'react';
 import {
   View,
   Text,
-  Image,
   SafeAreaView,
   TouchableOpacity,
   TextInput,
@@ -170,13 +169,9 @@ const Home = ({navigation}) => {
         marginBottom: 70,
       }}>
       <View>
-        {/* Header */}
         {renderHeader()}
-        {/* Search Bar */}
         {renderSearchBar()}
-        {/* See Recipe Card */}
         {renderSeeRecipeCard()}
-        {/* Top 10 Section */}
         {renderTop10Section()}
       </View>
     </SafeAreaView>
